@@ -13,7 +13,6 @@
 [data-icon]:before {
 	font-family: 'icomoon';
 	content: attr(data-icon);
-	speak: none;
 	font-weight: normal;
 	font-variant: normal;
 	text-transform: none;
@@ -29,7 +28,6 @@ you can use the generic selector below, but it's slower:
 */
 .icon-bold, .icon-italic, .icon-quote, .icon-unordered-list, .icon-ordered-list, .icon-link, .icon-image, .icon-play, .icon-music, .icon-contract, .icon-fullscreen, .icon-question, .icon-info, .icon-undo, .icon-redo, .icon-code, .icon-preview {
 	font-family: 'icomoon';
-	speak: none;
 	font-style: normal;
 	font-weight: normal;
 	font-variant: normal;
@@ -126,8 +124,6 @@ you can use the generic selector below, but it's slower:
   background: #7e7;
   z-index: 1;
 }
-/* Can style cursor different in overwrite (non-insert) mode */
-.CodeMirror div.CodeMirror-cursor.CodeMirror-overwrite {}
 
 /* DEFAULT THEME */
 
