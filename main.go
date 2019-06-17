@@ -11,6 +11,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 
 	"github.com/gorilla/mux"
 
@@ -99,12 +100,12 @@ func signUpEndpoint(w http.ResponseWriter, req *http.Request) {
 }
 
 func getMdFile(name string) ([]byte, error) {
-	dat, err := ioutil.ReadFile(name)
+	dat, err := ioutil.ReadFile("md/" + name + ".md")
 	return dat, err
 }
 
 func updateMdFile(name string, payload []byte) error {
-	err := ioutil.WriteFile(name, payload, 0644)
+	err := ioutil.WriteFile("md/"+name+".md", payload, 0644)
 	return err
 }
 
@@ -117,15 +118,23 @@ func getFile(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, string(str), 500)
 		return
 	}
-	json.NewEncoder(w).Encode(data)
+	var md MD
+	md.Name = params["name"]
+	md.Text = string(data)
+	json.NewEncoder(w).Encode(md)
 	return
 }
 
 //PUT
 func updateFile(w http.ResponseWriter, req *http.Request) {
 	var md MD
-	json.NewDecoder(req.Body).Decode(&md)
-	err := updateMdFile(md.Name, []byte(md.Text))
+	err := json.NewDecoder(req.Body).Decode(&md)
+	if err != nil {
+		str, _ := json.Marshal(err)
+		http.Error(w, string(str), 400)
+		return
+	}
+	err = updateMdFile(md.Name, []byte(md.Text))
 	if err != nil {
 		str, _ := json.Marshal(err)
 		http.Error(w, string(str), 500)
@@ -136,6 +145,41 @@ func updateFile(w http.ResponseWriter, req *http.Request) {
 
 //POST
 func createFile(w http.ResponseWriter, req *http.Request) {
+	var md MD
+
+	err := json.NewDecoder(req.Body).Decode(&md)
+	if err != nil {
+		str, _ := json.Marshal(err)
+		http.Error(w, string(str), 400)
+	}
+
+	_, err = os.Create("md/" + md.Name + ".md")
+
+	if err != nil {
+		str, _ := json.Marshal(err)
+		http.Error(w, string(str), 500)
+		return
+	}
+	updateMdFile(md.Name, []byte(md.Text))
+	return
+}
+
+func createSection(w http.ResponseWriter, req *http.Request) {
+	var md MD
+	err := json.NewDecoder(req.Body).Decode(&md)
+	if err != nil {
+		str, _ := json.Marshal(err)
+		http.Error(w, string(str), 500)
+	}
+	err = os.Mkdir(md.Name, 0666)
+	if err != nil {
+		str, _ := json.Marshal(err)
+		http.Error(w, string(str), 400)
+	}
+}
+
+func updateHugo() {
+	exec.Command("hugo")
 	return
 }
 
@@ -180,7 +224,7 @@ func signInEndpoint(w http.ResponseWriter, req *http.Request) {
 }
 
 func initAuthBase() DBase {
-	db, err := bolt.Open("users.db", 0600, nil)
+	db, err := bolt.Open("db/users.db", 0600, nil)
 	if err != nil {
 		log.Println(err)
 	}
@@ -201,5 +245,6 @@ func main() {
 	router.HandleFunc("/file/{name}", getFile).Methods("GET")
 	router.HandleFunc("/file", updateFile).Methods("PUT")
 	router.HandleFunc("/file", createFile).Methods("POST")
+	router.HandleFunc("/section", createSection).Methods("POST")
 	log.Fatal(http.ListenAndServe(":1337", router))
 }
