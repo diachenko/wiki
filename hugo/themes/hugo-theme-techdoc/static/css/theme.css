@@ -8,11 +8,7 @@
  */
 html {
   line-height: 1.15;
-  /* 1 */
-  -ms-text-size-adjust: 100%;
-  /* 2 */
   -webkit-text-size-adjust: 100%;
-  /* 2 */
 }
 
 /* Sections
@@ -389,30 +385,11 @@ summary {
   display: list-item;
 }
 
-/* Scripting
-   ========================================================================== */
-/**
- * Add the correct display in IE 9-.
- */
+
 canvas {
   display: inline-block;
 }
 
-/**
- * Add the correct display in IE.
- */
-template {
-  display: none;
-}
-
-/* Hidden
-   ========================================================================== */
-/**
- * Add the correct display in IE 10-.
- */
-[hidden] {
-  display: none;
-}
 
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -878,6 +855,7 @@ footer {
   color: #fff;
   font-size: 140%;
   display: inline-block;
-  position: relative;
+  padding-right: 10px;
   font-weight: bold;
+
 }
