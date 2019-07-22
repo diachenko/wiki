@@ -875,8 +875,9 @@ footer {
 
 
 .edit-page {
-  font-size: 80%;
-  margin-top: 2rem;
-  text-align: right;
+  color: #fff;
+  font-size: 140%;
+  display: inline-block;
+  position: relative;
   font-weight: bold;
 }

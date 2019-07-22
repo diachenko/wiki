@@ -6,4 +6,5 @@
 {{ with .Site.Params.description }}
 <p class="description">{{ . }}</p>
 {{end}}
+{{- partial "create-edit-page.html" . -}}
 </header>
