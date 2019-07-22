@@ -178,6 +178,7 @@ func createSection(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+//TODO: make hugo updating great again.
 func updateHugo() {
 	exec.Command("hugo")
 	return

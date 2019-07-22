@@ -1,6 +1,6 @@
 # Wiki
 
-## Disclaimer   
+## Disclaimer
 
 The goal of this project is to create small personal wiki engine.
 
