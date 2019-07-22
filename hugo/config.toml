@@ -2,8 +2,8 @@ baseURL = "https://diachenko.me/wiki"
 
 languageCode = "en-us"
 DefaultContentLanguage = "en"
-title = "New wiki"
-theme = "hugo-theme-techdoc"
+title = "Diachenko personal wiki"
+theme = "wiki"
 
 hasCJKLanguage = true
 metaDataFormat = "yaml"

@@ -1,0 +1,6 @@
+name = "Wiki"
+license = "MIT"
+description = "Wiki theme"
+tags = ["Documentation", "Docs", "Responsive", "Google analytics"]
+features = ["documentation", "menu"]
+min_version = "0.30"
