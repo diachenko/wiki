@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Create new page</title>
+
+<link rel="stylesheet" href="../css/editor.css" />
+<script type="text/javascript" src="../js/editor.js"></script>
+<script type="text/javascript" src="../js/marked.js"></script>
+</head>
+<body>
+<div class="container"><header class="head-fix">
+<h1>Diachenko personal wiki</h1>
+<a href="/edit/" class="edit-page">Save</a>
+</header>
+<div class="content-container">
+    <textarea id="mdedit"></textarea>
+    <script type="text/javascript">
+        var editor = new Editor({
+            element: document.getElementById("mdedit")
+        });
+        editor.render();
+        editor.text = 'hello world';
+    </script>
+</div>
+</div>
+</body>
+</html>
