@@ -541,7 +541,7 @@ header {
   position: fixed;
   top: 0px;
   width: 100%;
-  padding-inline: 10px;
+  padding-left: 10px;
   height: 42px;
 }
 
@@ -647,22 +647,17 @@ footer {
   margin-top: 2rem;
 }
 
+.actions {
+  position: absolute;
+  right: 32px;
+  top: 0px;
+}
+
 .edit-page {
   color: #fff;
   font-size: 140%;
-  position: fixed;
   text-decoration: none;
-  right: 2%;
-  display: inline;
-  font-weight: bold;
-}
-
-.create-page {
-  color: #fff;
-  font-size: 140%;
-  text-decoration: none;
-  position: fixed;
-  right: 7%;
+  padding-right: 10px;
   display: inline;
   font-weight: bold;
 }
