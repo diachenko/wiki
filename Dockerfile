@@ -6,8 +6,6 @@ WORKDIR /app
 
 EXPOSE 1337
 
-RUN apt update 
-RUN apt upgrade -y
 RUN apt install hugo -y
 RUN mkdir db
 RUN go get github.com/gorilla/mux
