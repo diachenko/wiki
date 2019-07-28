@@ -12,6 +12,7 @@ RUN apt-get install hugo -y
 RUN mkdir db
 RUN go get github.com/gorilla/mux
 RUN go get github.com/boltdb/bolt
+RUN go get github.com/gomarkdown/markdown
 RUN mkdir md
 
 
