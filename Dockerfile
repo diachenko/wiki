@@ -17,7 +17,7 @@ RUN mkdir md
 
 
 COPY . /app
-
+RUN hugo
 #RUN go build
 CMD [ "./wiki" ]
 
