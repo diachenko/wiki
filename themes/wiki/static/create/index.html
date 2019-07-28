@@ -10,7 +10,7 @@
 <script type="text/javascript">
  async function sendData() {
       var data = document.getElementsByClassName("CodeMirror-code")[0].innerText
-      var url = "./create"
+      var url = "http://diachenko.me:1337/file"
       try {
           const config = {
               method: 'POST',
@@ -24,10 +24,10 @@
           const json = await response.json()
           console.log(json)
           if (response.ok) {
-              consol.log(response)
+              console.log(response)
               return response
           } else {
-              //
+              console.log(response)
           }
       } catch (error) {
               console.log(error)

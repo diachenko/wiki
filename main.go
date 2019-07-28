@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/exec"
 
+	"github.com/gomarkdown/markdown"
 	"github.com/gorilla/mux"
 
 	bolt "github.com/boltdb/bolt"
@@ -67,6 +68,12 @@ func GenerateGUID() string {
 	b := make([]byte, 16)
 	rand.Read(b)
 	return fmt.Sprintf("%X-%X-%X-%X-%X", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
+}
+
+func getReadme(w http.ResponseWriter, req *http.Request) {
+	file, _ := ioutil.ReadFile("README.md")
+	output := markdown.ToHTML(file, nil, nil)
+	w.Write(output)
 }
 
 func signUpEndpoint(w http.ResponseWriter, req *http.Request) {
@@ -241,6 +248,7 @@ func main() {
 	auth = initAuthBase()
 
 	router := mux.NewRouter()
+	router.HandleFunc("/", getReadme).Methods("GET")
 	router.HandleFunc("/signin", signInEndpoint).Methods("POST")
 	router.HandleFunc("/signup", signUpEndpoint).Methods("POST")
 	router.HandleFunc("/file/{name}", getFile).Methods("GET")
