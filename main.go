@@ -63,6 +63,11 @@ func Logger(msg string, file string) {
 	return
 }
 
+// EnableCors Adds CORS to header
+func EnableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+}
+
 // GenerateGUID generates UUID/GUID
 func GenerateGUID() string {
 	b := make([]byte, 16)
@@ -118,6 +123,7 @@ func updateMdFile(name string, payload []byte) error {
 
 //GET
 func getFile(w http.ResponseWriter, req *http.Request) {
+	EnableCors(&w)
 	params := mux.Vars(req)
 	data, err := getMdFile(params["name"])
 	if err != nil {
@@ -134,6 +140,7 @@ func getFile(w http.ResponseWriter, req *http.Request) {
 
 //PUT
 func updateFile(w http.ResponseWriter, req *http.Request) {
+	EnableCors(&w)
 	var md MD
 	err := json.NewDecoder(req.Body).Decode(&md)
 	if err != nil {
@@ -152,6 +159,7 @@ func updateFile(w http.ResponseWriter, req *http.Request) {
 
 //POST
 func createFile(w http.ResponseWriter, req *http.Request) {
+	EnableCors(&w)
 	var md MD
 
 	err := json.NewDecoder(req.Body).Decode(&md)
