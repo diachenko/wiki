@@ -15,6 +15,7 @@ RUN mkdir db
 #RUN go get github.com/gomarkdown/markdown
 RUN mkdir md
 
+VOLUME /var/www/html/wiki2
 
 COPY . /app
 RUN hugo

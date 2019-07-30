@@ -9,7 +9,8 @@
 <script type="text/javascript" src="../js/marked.js"></script>
 <script type="text/javascript">
  async function sendData() {
-      var data = document.getElementsByClassName("CodeMirror-code")[0].innerText
+      var req = {"name": document.getElementById("fileName").value, 
+                 "text": document.getElementsByClassName("CodeMirror-code")[0].innerText}
       var url = "https://mywiki.diachenko.me/file"
       try {
           const config = {
@@ -18,7 +19,7 @@
                   'Accept': 'application/json',
                   'Content-Type': 'application/json',
               },
-              body: JSON.stringify(data)
+              body: JSON.stringify(req)
           }
           const response = await fetch(url, config)
           const json = await response.json()
@@ -40,6 +41,7 @@
 <h1>Diachenko personal wiki</h1>
 </header>
 <div class="content-container">
+    <input type="text" id="fileName">
     <textarea id="mdedit"></textarea>
     <script type="text/javascript">
         var editor = new Editor({

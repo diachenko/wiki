@@ -166,6 +166,7 @@ func updateFile(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, string(str), 500)
 		return
 	}
+	updateHugo()
 	return
 }
 
@@ -188,6 +189,7 @@ func createFile(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	updateMdFile(md.Name, []byte(md.Text))
+	updateHugo()
 	return
 }
 
