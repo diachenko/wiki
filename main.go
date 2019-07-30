@@ -75,6 +75,18 @@ func GenerateGUID() string {
 	return fmt.Sprintf("%X-%X-%X-%X-%X", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
 }
 
+// CORSHandler getting everythign work for CORS
+func CORSHandler(w http.ResponseWriter, req *http.Request) {
+	setupResponse(&w, req)
+}
+
+// getting everythign work for CORS
+func setupResponse(w *http.ResponseWriter, req *http.Request) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	(*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+}
+
 func getReadme(w http.ResponseWriter, req *http.Request) {
 	file, _ := ioutil.ReadFile("README.md")
 	output := markdown.ToHTML(file, nil, nil)
@@ -258,10 +270,14 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", getReadme).Methods("GET")
 	router.HandleFunc("/signin", signInEndpoint).Methods("POST")
+	router.HandleFunc("/signin", CORSHandler).Methods("OPTIONS")
 	router.HandleFunc("/signup", signUpEndpoint).Methods("POST")
+	router.HandleFunc("/signup", CORSHandler).Methods("OPTIONS")
+	router.HandleFunc("/file", CORSHandler).Methods("OPTIONS")
 	router.HandleFunc("/file/{name}", getFile).Methods("GET")
 	router.HandleFunc("/file", updateFile).Methods("PUT")
 	router.HandleFunc("/file", createFile).Methods("POST")
 	router.HandleFunc("/section", createSection).Methods("POST")
+	router.HandleFunc("/section", CORSHandler).Methods("OPTIONS")
 	log.Fatal(http.ListenAndServe(":1337", router))
 }
