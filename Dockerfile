@@ -18,7 +18,7 @@ RUN mkdir md
 #VOLUME /var/www/html/wiki2
 
 COPY . /app
-RUN hugo
+#RUN hugo
 #RUN go build
 CMD [ "./wiki" ]
 
