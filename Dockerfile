@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM ubuntu:18.04
 
 LABEL maintainer="a.diachenko@outlook.com"
 
@@ -15,7 +15,7 @@ RUN mkdir db
 #RUN go get github.com/gomarkdown/markdown
 RUN mkdir md
 
-VOLUME /var/www/html/wiki2
+#VOLUME /var/www/html/wiki2
 
 COPY . /app
 RUN hugo

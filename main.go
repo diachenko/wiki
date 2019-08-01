@@ -266,6 +266,7 @@ func initAuthBase() DBase {
 }
 
 func main() {
+	updateHugo()
 	tokens = make(map[string]string)
 	auth = initAuthBase()
 
