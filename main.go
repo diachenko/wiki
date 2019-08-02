@@ -19,6 +19,9 @@ import (
 	bolt "github.com/boltdb/bolt"
 )
 
+//Path contains route to md files.
+const Path = "content/"
+
 //DBase type used for storing BoltDB instance
 type DBase struct {
 	DB       *bolt.DB
@@ -124,12 +127,12 @@ func signUpEndpoint(w http.ResponseWriter, req *http.Request) {
 }
 
 func getMdFile(name string) ([]byte, error) {
-	dat, err := ioutil.ReadFile("md/" + name + ".md")
+	dat, err := ioutil.ReadFile(Path + name + ".md")
 	return dat, err
 }
 
 func updateMdFile(name string, payload []byte) error {
-	err := ioutil.WriteFile("md/"+name+".md", payload, 0644)
+	err := ioutil.WriteFile(Path+name+".md", payload, 0644)
 	return err
 }
 
@@ -180,14 +183,17 @@ func createFile(w http.ResponseWriter, req *http.Request) {
 		str, _ := json.Marshal(err)
 		http.Error(w, string(str), 400)
 	}
+	println("name = " + md.Name)
+	println("text = " + md.Text)
 
-	_, err = os.Create("md/" + md.Name + ".md")
+	_, err = os.Create("content/" + md.Name + ".md")
 
 	if err != nil {
 		str, _ := json.Marshal(err)
 		http.Error(w, string(str), 500)
 		return
 	}
+
 	updateMdFile(md.Name, []byte(md.Text))
 	updateHugo()
 	return
@@ -207,10 +213,18 @@ func createSection(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-//TODO: make hugo updating great again.
-func updateHugo() {
-	exec.Command("hugo")
-	return
+func updateHugo() error {
+	cmd := exec.Command("hugo")
+	log.Printf("Running hugo")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	print(cmd.Stdout)
+	err := cmd.Run()
+	if err != nil {
+		log.Printf("Hugo finished with error: %v", err)
+		return err
+	}
+	return nil
 }
 
 func signInEndpoint(w http.ResponseWriter, req *http.Request) {
