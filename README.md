@@ -24,13 +24,13 @@ literally, it's draft of the draft.
 
 To start docker build it first:
 
-```
+```bash
 docker build --tag=wiki .
 ```
 
 Then run it:
 
-```
+```bash
 docker run -d -p YOUR_PORT_HERE:1337/tcp -v PATH_TO_YOUR_WEB_SERVER_FOLDER:/app/public/ wiki:latest
 example:
 docker run -d -p 1337:1337/tcp -v /usr/www/html/wiki2:/app/public/ wiki:latest

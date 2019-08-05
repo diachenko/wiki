@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"time"
 
 	"github.com/gomarkdown/markdown"
 	"github.com/gorilla/mux"
@@ -20,7 +21,7 @@ import (
 )
 
 //Path contains route to md files.
-const Path = "content/"
+const Path = "content/content/"
 
 //DBase type used for storing BoltDB instance
 type DBase struct {
@@ -183,8 +184,6 @@ func createFile(w http.ResponseWriter, req *http.Request) {
 		str, _ := json.Marshal(err)
 		http.Error(w, string(str), 400)
 	}
-	println("name = " + md.Name)
-	println("text = " + md.Text)
 
 	_, err = os.Create("content/" + md.Name + ".md")
 
@@ -193,6 +192,7 @@ func createFile(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, string(str), 500)
 		return
 	}
+	md.Text = setHugoPrefix(md.Name) + md.Text
 
 	updateMdFile(md.Name, []byte(md.Text))
 	updateHugo()
@@ -211,6 +211,10 @@ func createSection(w http.ResponseWriter, req *http.Request) {
 		str, _ := json.Marshal(err)
 		http.Error(w, string(str), 400)
 	}
+}
+
+func setHugoPrefix(name string) string {
+	return fmt.Sprintf("---\ntitle: \"%s\"\ndate: %v\n---\n\n", name, time.Now().Format(time.RFC3339))
 }
 
 func updateHugo() error {
@@ -283,7 +287,7 @@ func main() {
 	updateHugo()
 	tokens = make(map[string]string)
 	auth = initAuthBase()
-
+	setHugoPrefix("newline")
 	router := mux.NewRouter()
 	router.HandleFunc("/", getReadme).Methods("GET")
 	router.HandleFunc("/signin", signInEndpoint).Methods("POST")
