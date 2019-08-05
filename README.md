@@ -21,6 +21,7 @@ literally, it's draft of the draft.
 ## Docker manual
 
 > Temprorary: run ```go build``` after pulling repo
+
 To start docker build it first:
 
 ```
