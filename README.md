@@ -35,3 +35,12 @@ docker run -d -p YOUR_PORT_HERE:1337/tcp -v PATH_TO_YOUR_WEB_SERVER_FOLDER:/app/
 example:
 docker run -d -p 1337:1337/tcp -v /usr/www/html/wiki2:/app/public/ wiki:latest
 ```
+
+## TODO's
+
+- move path to docker variable
+- use auth module to create/update pages
+- add port as env variable
+- create dockerhub entity for this repo
+- update page
+- css for create page
