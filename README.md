@@ -39,8 +39,10 @@ docker run -d -p 1337:1337/tcp -v /usr/www/html/wiki2:/app/public/ wiki:latest
 ## TODO's
 
 - move path to docker variable
-- use auth module to create/update pages
+- use auth to create/update pages
+- auth page
 - add port as env variable
 - create dockerhub entity for this repo
 - update page
 - css for create page
+- think of adding tags to create/edit pages
