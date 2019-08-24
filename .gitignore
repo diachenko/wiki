@@ -1,5 +1,11 @@
 users.db
 users.db.lock
 wiki
+wiki.exe
 public/
 content/
+img/
+db/
+.vscode/
+log.txt
+
