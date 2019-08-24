@@ -139,7 +139,7 @@ func createSection(w http.ResponseWriter, req *http.Request) {
 	err = os.Mkdir(md.Name, 0666)
 	if err != nil {
 		str, _ := json.Marshal(err)
-		http.Error(w, string(str), 400)
+		http.Error(w, string(str), 500)
 		return
 	}
 }
