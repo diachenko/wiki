@@ -11,7 +11,7 @@
  async function sendData() {
       var req = {"name": document.getElementById("fileName").value, 
                  "text": document.getElementsByClassName("CodeMirror-code")[0].innerText}
-      var url = "https://mywiki.diachenko.me/file"
+      var url = "https://mywiki.diachenko.me/article"
       try {
           const config = {
               method: 'POST',

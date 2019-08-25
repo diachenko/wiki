@@ -7010,6 +7010,14 @@ function drawImage(editor) {
   _replaceSelection(cm, stat.image, '![', '](http://)');
 }
 
+/**
+ * Action for upload an img.
+ */
+function uploadFile(editor) {
+  var cm = editor.codemirror;
+  var stat = getState(cm);
+  _replaceSelection(cm, stat.image, '![', '](http://)');
+}
 
 /**
  * Undo action.
@@ -7140,7 +7148,8 @@ var toolbar = [
   {name: 'link', action: drawLink},
   {name: 'image', action: drawImage},
   '|',
-
+  {name: 'upload', action: uploadFile},
+  '|',
   {name: 'preview', action: togglePreview},
   {name: 'fullscreen', action: toggleFullScreen}
 ];
@@ -7249,7 +7258,6 @@ Editor.prototype.createToolbar = function(items) {
 
   var self = this;
 
-  var el;
   self.toolbar = {};
 
   for (var i = 0; i < items.length; i++) {
@@ -7361,6 +7369,7 @@ Editor.toggleUnOrderedList = toggleUnOrderedList;
 Editor.toggleOrderedList = toggleOrderedList;
 Editor.drawLink = drawLink;
 Editor.drawImage = drawImage;
+Editor.uploadFile = uploadFile;
 Editor.undo = undo;
 Editor.redo = redo;
 Editor.togglePreview = togglePreview;
@@ -7389,6 +7398,9 @@ Editor.prototype.drawLink = function() {
 };
 Editor.prototype.drawImage = function() {
   drawImage(this);
+};
+Editor.prototype.uploadFile = function() {
+  uploadFile(this);
 };
 Editor.prototype.undo = function() {
   undo(this);
