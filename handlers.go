@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gomarkdown/markdown"
 	"github.com/gorilla/mux"
@@ -29,8 +30,10 @@ func getArticle(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	var md MD
+	tmp := strings.SplitAfterN(string(data), "\n---", 2)[1]
+
 	md.Name = params["name"]
-	md.Text = string(data)
+	md.Text = strings.TrimSpace(tmp)
 	json.NewEncoder(w).Encode(md)
 	return
 }
@@ -64,6 +67,11 @@ func createArticle(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		str, _ := json.Marshal(err)
 		http.Error(w, string(str), 400)
+		return
+	}
+
+	if md.Name == "" {
+		http.Error(w, "Article name should be filled", 400)
 		return
 	}
 

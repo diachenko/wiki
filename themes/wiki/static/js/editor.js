@@ -7309,40 +7309,10 @@ Editor.prototype.createToolbar = function(items) {
 };
 
 Editor.prototype.createStatusbar = function(status) {
-  status = status || this.options.status;
-
-  if (!status || status.length === 0) return;
-
+  
   var bar = document.createElement('div');
   bar.className = 'editor-statusbar';
 
-  var pos, cm = this.codemirror;
-  for (var i = 0; i < status.length; i++) {
-    (function(name) {
-      var el = document.createElement('span');
-      el.className = name;
-      if (name === 'words') {
-        el.innerHTML = '0';
-        cm.on('update', function() {
-          el.innerHTML = wordCount(cm.getValue());
-        });
-      } else if (name === 'lines') {
-        el.innerHTML = '0';
-        cm.on('update', function() {
-          el.innerHTML = cm.lineCount();
-        });
-      } else if (name === 'cursor') {
-        el.innerHTML = '0:0';
-        cm.on('cursorActivity', function() {
-          pos = cm.getCursor();
-          el.innerHTML = pos.line + ':' + pos.ch;
-        });
-      }
-      bar.appendChild(el);
-    })(status[i]);
-  }
-  var cmWrapper = this.codemirror.getWrapperElement();
-  cmWrapper.parentNode.insertBefore(bar, cmWrapper.nextSibling);
   return bar;
 };
 
