@@ -11,8 +11,6 @@ var CodeMirror = (function() {
   // bugs and behavior differences.
   var gecko = /gecko\/\d/i.test(navigator.userAgent);
   var ie = /MSIE \d/.test(navigator.userAgent);
-  var ie_lt8 = ie && (document.documentMode == null || document.documentMode < 8);
-  var ie_lt9 = ie && (document.documentMode == null || document.documentMode < 9);
   var webkit = /WebKit\//.test(navigator.userAgent);
   var qtwebkit = webkit && /Qt\/\d+\.\d+/.test(navigator.userAgent);
   var chrome = /Chrome\//.test(navigator.userAgent);
@@ -34,7 +32,7 @@ var CodeMirror = (function() {
   if (opera_version && opera_version >= 15) { opera = false; webkit = true; }
   // Some browsers use the wrong event properties to signal cmd/ctrl on OS X
   var flipCtrlCmd = mac && (qtwebkit || opera && (opera_version == null || opera_version < 12.11));
-  var captureMiddleClick = gecko || (ie && !ie_lt9);
+  var captureMiddleClick = gecko || ie;
 
   // Optimize some code when these features are not used
   var sawReadOnlySpans = false, sawCollapsedSpans = false;
@@ -137,8 +135,6 @@ var CodeMirror = (function() {
     // The element in which the editor lives.
     d.wrapper = elt("div", [d.inputDiv, d.scrollbarH, d.scrollbarV,
                             d.scrollbarFiller, d.gutterFiller, d.scroller], "CodeMirror");
-    // Work around IE7 z-index bug
-    if (ie_lt8) { d.gutters.style.zIndex = -1; d.scroller.style.paddingRight = 0; }
     if (place.appendChild) place.appendChild(d.wrapper); else place(d.wrapper);
 
     // Needed to hide big blue blinking cursor on Mobile Safari
@@ -146,8 +142,6 @@ var CodeMirror = (function() {
     if (!webkit) d.scroller.draggable = true;
     // Needed to handle Tab key in KHTML
     if (khtml) { d.inputDiv.style.height = "1px"; d.inputDiv.style.position = "absolute"; }
-    // Need to set a minimum width to see the scrollbar on IE7 (but must not set it on IE8).
-    else if (ie_lt8) d.scrollbarH.style.minWidth = d.scrollbarV.style.minWidth = "18px";
 
     // Current visible range (may be bigger than the view window).
     d.viewOffset = d.lastSizeC = 0;
@@ -533,14 +527,8 @@ var CodeMirror = (function() {
     var display = cm.display;
     var prevBottom = display.lineDiv.offsetTop;
     for (var node = display.lineDiv.firstChild, height; node; node = node.nextSibling) if (node.lineObj) {
-      if (ie_lt8) {
-        var bot = node.offsetTop + node.offsetHeight;
-        height = bot - prevBottom;
-        prevBottom = bot;
-      } else {
-        var box = getRect(node);
-        height = box.bottom - box.top;
-      }
+      var box = getRect(node);
+      height = box.bottom - box.top;
       var diff = node.lineObj.height - height;
       if (height < 2) height = textHeight(display);
       if (diff > .001 || diff < -.001) {
@@ -722,7 +710,6 @@ var CodeMirror = (function() {
                                        dims.gutterLeft[id] + "px; width: " + dims.gutterWidth[id] + "px"));
         }
     }
-    if (ie_lt8) wrap.style.zIndex = 2;
     if (line.widgets && wrap != reuse) for (var i = 0, ws = line.widgets; i < ws.length; ++i) {
       var widget = ws[i], node = elt("div", [widget.node], "CodeMirror-linewidget");
       if (!widget.handleMouseEvents) node.ignoreEvents = true;
@@ -1018,40 +1005,10 @@ var CodeMirror = (function() {
   function measureLineInner(cm, line) {
     var display = cm.display, measure = emptyArray(line.text.length);
     var pre = lineContent(cm, line, measure, true);
-
-    // IE does not cache element positions of inline elements between
-    // calls to getBoundingClientRect. This makes the loop below,
-    // which gathers the positions of all the characters on the line,
-    // do an amount of layout work quadratic to the number of
-    // characters. When line wrapping is off, we try to improve things
-    // by first subdividing the line into a bunch of inline blocks, so
-    // that IE can reuse most of the layout information from caches
-    // for those blocks. This does interfere with line wrapping, so it
-    // doesn't work when wrapping is on, but in that case the
-    // situation is slightly better, since IE does cache line-wrapping
-    // information and only recomputes per-line.
-    if (ie && !ie_lt8 && !cm.options.lineWrapping && pre.childNodes.length > 100) {
-      var fragment = document.createDocumentFragment();
-      var chunk = 10, n = pre.childNodes.length;
-      for (var i = 0, chunks = Math.ceil(n / chunk); i < chunks; ++i) {
-        var wrap = elt("div", null, null, "display: inline-block");
-        for (var j = 0; j < chunk && n; ++j) {
-          wrap.appendChild(pre.firstChild);
-          --n;
-        }
-        fragment.appendChild(wrap);
-      }
-      pre.appendChild(fragment);
-    }
-
     removeChildrenAndAdd(display.measure, pre);
 
     var outer = getRect(display.lineDiv);
     var vranges = [], data = emptyArray(line.text.length), maxBot = pre.offsetHeight;
-    // Work around an IE7/8 bug where it will sometimes have randomly
-    // replaced our pre with a clone at this point.
-    if (ie_lt9 && display.measure.first != pre)
-      removeChildrenAndAdd(display.measure, pre);
 
     function measureRect(rect) {
       var top = rect.top - outer.top, bot = rect.bottom - outer.top;
@@ -1447,7 +1404,7 @@ var CodeMirror = (function() {
     if (!cm.state.focused || hasSelection(input) || isReadOnly(cm) || cm.state.disableInput) return false;
     var text = input.value;
     if (text == prevInput && posEq(sel.from, sel.to)) return false;
-    if (ie && !ie_lt9 && cm.display.inputHasSelection === text) {
+    if (ie && cm.display.inputHasSelection === text) {
       resetInput(cm, true);
       return false;
     }
@@ -1486,10 +1443,10 @@ var CodeMirror = (function() {
       var content = minimal ? "-" : selected || cm.getSelection();
       cm.display.input.value = content;
       if (cm.state.focused) selectInput(cm.display.input);
-      if (ie && !ie_lt9) cm.display.inputHasSelection = content;
+      if (ie) cm.display.inputHasSelection = content;
     } else if (user) {
       cm.display.prevInput = cm.display.input.value = "";
-      if (ie && !ie_lt9) cm.display.inputHasSelection = null;
+      if (ie) cm.display.inputHasSelection = null;
     }
     cm.display.inaccurateSelection = minimal;
   }
@@ -2042,7 +1999,6 @@ var CodeMirror = (function() {
     if (handled) {
       e_preventDefault(e);
       restartBlink(cm);
-      if (ie_lt9) { e.oldKeyCode = e.keyCode; e.keyCode = 0; }
       signalLater(cm, "keyHandled", cm, name, e);
     }
     return handled;
@@ -2090,7 +2046,7 @@ var CodeMirror = (function() {
         this.doc.mode.electricChars.indexOf(ch) > -1)
       setTimeout(operation(cm, function() {indentLine(cm, cm.doc.sel.to.line, "smart");}), 75);
     if (handleCharBinding(cm, e, ch)) return;
-    if (ie && !ie_lt9) cm.display.inputHasSelection = null;
+    if (ie) cm.display.inputHasSelection = null;
     fastPoll(cm);
   }
 
@@ -2147,12 +2103,11 @@ var CodeMirror = (function() {
     function rehide() {
       display.inputDiv.style.position = "relative";
       display.input.style.cssText = oldCSS;
-      if (ie_lt9) display.scrollbarV.scrollTop = display.scroller.scrollTop = scrollPos;
       slowPoll(cm);
 
       // Try to detect the user choosing select-all
       if (display.input.selectionStart != null) {
-        if (!ie || ie_lt9) prepareSelectAllHack();
+        if (!ie) prepareSelectAllHack();
         clearTimeout(detectingSelectAll);
         var i = 0, poll = function(){
           if (display.prevInput == " " && display.input.selectionStart == 0)
@@ -2164,7 +2119,7 @@ var CodeMirror = (function() {
       }
     }
 
-    if (ie && !ie_lt9) prepareSelectAllHack();
+    if (ie) prepareSelectAllHack();
     if (captureMiddleClick) {
       e_stop(e);
       var mouseup = function() {
@@ -5394,10 +5349,7 @@ var CodeMirror = (function() {
   }
 
   function setTextContent(e, str) {
-    if (ie_lt9) {
-      e.innerHTML = "";
-      e.appendChild(document.createTextNode(str));
-    } else e.textContent = str;
+    e.textContent = str;
   }
 
   function getRect(node) {
@@ -5409,9 +5361,6 @@ var CodeMirror = (function() {
 
   // Detect drag-and-drop
   var dragAndDrop = function() {
-    // There is *some* kind of drag-and-drop support in IE6-8, but I
-    // couldn't get it to work yet.
-    if (ie_lt9) return false;
     var div = elt('div');
     return "draggable" in div || "dragDrop" in div;
   }();
@@ -5457,7 +5406,7 @@ var CodeMirror = (function() {
       var test = elt("span", "\u200b");
       removeChildrenAndAdd(measure, elt("span", [test, document.createTextNode("x")]));
       if (measure.firstChild.offsetHeight != 0)
-        zwspSupported = test.offsetWidth <= 1 && test.offsetHeight > 2 && !ie_lt8;
+        zwspSupported = test.offsetWidth <= 1 && test.offsetHeight > 2;
     }
     if (zwspSupported) return elt("span", "\u200b");
     else return elt("span", "\u00a0", null, "display: inline-block; width: 1px; margin-right: -1px");
