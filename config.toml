@@ -1,4 +1,4 @@
-baseURL = "https://miwiki.diachenko.me/"
+baseURL = "https://diachenko.me/wiki"
 
 languageCode = "en-us"
 DefaultContentLanguage = "en"

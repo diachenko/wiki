@@ -214,9 +214,6 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
   /* Reset some styles that the rest of the page might have set */
   -moz-border-radius: 0; -webkit-border-radius: 0; -o-border-radius: 0; border-radius: 0;
   border-width: 0;
-  background: transparent;
-  font-family: inherit;
-  font-size: inherit;
   margin: 0;
   white-space: pre-wrap;
   word-wrap: normal;
@@ -469,4 +466,4 @@ body {
   font-size: 24px;
   padding: 4px;
   padding-left: 8px;
-}
+} 

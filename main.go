@@ -82,7 +82,7 @@ func main() {
 	router.HandleFunc("/article/{name}", getArticle).Methods("GET")
 	router.HandleFunc("/article", updateArticle).Methods("PUT")
 	router.HandleFunc("/article", createArticle).Methods("POST")
-	//router.HandleFunc("/file", CORSHandler).Methods("OPTIONS")
+	router.HandleFunc("/file", CORSHandler).Methods("OPTIONS")
 	router.HandleFunc("/file", uploadFile).Methods("POST")
 	router.HandleFunc("/section", createSection).Methods("POST")
 	router.HandleFunc("/section", CORSHandler).Methods("OPTIONS")
